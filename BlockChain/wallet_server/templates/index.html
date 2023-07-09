@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Wallet Page</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(function () {
+				let data = { blockchain_address: $('#address').val() };
+				console.log(1);
+				$.ajax({
+					url: '/wallet',
+					type: 'POST',
+					success: function (response) {
+						$('#public-key').val(response['public_key']);
+						$('#private-key').val(response['private_key']);
+						$('#address').val(response['wallet_address']);
+						console.info('resp: ', response);
+					},
+					error: function (err) {
+						console.error('error: ', error);
+					},
+				});
+				$.ajax({
+					url: '/wallet/amount',
+					type: 'GET',
+					data: data,
+					success: function (resp) {
+						var response = JSON.parse(resp);
+						let amount = response.amount;
+						$('#wallet_amount').text(amount);
+						console.info(amount);
+					},
+					error: function (err) {
+						console.error(err);
+					},
+				});
+			});
+		</script>
+		<script>
+			$(document).ready(function () {
+				$('.btn').click(function () {
+					$.ajax({
+						url: '/transaction',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify({
+							sender_private_key: $('#private-key').val(),
+							receiver_address: $('#send-address').val(),
+							sender_address: $('#address').val(),
+							sender_public_key: $('#public-key').val(),
+							value: $('#amount').val(),
+						}),
+						success: function (response) {
+							console.info('resp: ', response);
+							if (response == 'Fail.') {
+								alert('Send Failed');
+							}
+							alert('Send Success');
+						},
+						error: function (err) {
+							console.error('error: ', err);
+							alert('Send Failed');
+						},
+					});
+					ReloadWallet();
+				});
+				function ReloadWallet() {
+					let data = { blockchain_address: $('#address').val() };
+					$.ajax({
+						url: '/wallet/amount',
+						type: 'GET',
+						data: data,
+						success: function (resp) {
+							var response = JSON.parse(resp);
+							let amount = response.amount;
+							$('#wallet_amount').text(amount);
+							console.info(amount);
+						},
+						error: function (err) {
+							console.error(err);
+						},
+					});
+				}
+				// setInterval(ReloadWallet, 3000);
+				$('.reload').click(function () {
+					ReloadWallet();
+				});
+			});
+		</script>
+		<style>
+			body {
+				background-color: lightblue;
+				font-family: Arial, sans-serif;
+			}
+			.container {
+				width: 90%;
+				max-width: 500px;
+				margin: 90px auto;
+				padding: 20px;
+				background-color: #fff;
+				box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+				border-radius: 5px;
+				align-items: center;
+				box-shadow: #333;
+			}
+
+			h1 {
+				color: #333;
+				margin-bottom: 20px;
+				text-align: center;
+			}
+
+			.form-group {
+				margin-bottom: 20px;
+			}
+
+			label {
+				display: block;
+				font-weight: bold;
+				margin-bottom: 5px;
+			}
+
+			input[type='text'],
+			input[type='number'] {
+				width: 90%;
+				padding: 10px;
+				border-radius: 3px;
+				border: 1px solid black;
+				color: black;
+				background-color: rgb(213, 206, 206);
+			}
+
+			.btn {
+				display: inline-block;
+				padding: 10px 20px;
+				background-color: #007bff;
+				color: #fff;
+				border: none;
+				border-radius: 3px;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+			}
+
+			.btn:hover {
+				background-color: #0056b3;
+			}
+
+			.wallet {
+				height: 70px;
+				margin: 2px;
+				width: 100%;
+			}
+			.amount,
+			.amount p {
+				display: flex;
+				flex-direction: row;
+				/* justify-content: center; */
+				align-items: center;
+				margin: 7px 2px;
+				padding: 0px;
+			}
+			#id {
+				align-items: center;
+				justify-content: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Wallet</h1>
+			<div class="wallet">
+				<div class="amount">
+					<p>Balance:&nbsp;</p>
+					<p id="wallet_amount">0</p>
+				</div>
+				<button class="reload">Reload Wallet</button>
+			</div>
+			<div class="form-group">
+				<label for="public-key">Public Key:</label>
+				<input
+					type="text"
+					id="public-key"
+					disabled="true"
+				/>
+			</div>
+			<div class="form-group">
+				<label for="private-key">Private Key:</label>
+				<input
+					type="text"
+					id="private-key"
+					disabled="true"
+				/>
+			</div>
+			<div class="form-group">
+				<label for="address">BlockChain Address:</label>
+				<input
+					type="text"
+					id="address"
+					disabled="true"
+				/>
+			</div>
+
+			<h2>Send Money</h2>
+			<div class="form-group">
+				<label for="send-address">Address:</label>
+				<input
+					type="text"
+					id="send-address"
+				/>
+			</div>
+			<div class="form-group">
+				<label for="amount">Amount:</label>
+				<input
+					type="number"
+					id="amount"
+					placeholder="Value in $ (Dollars)"
+				/>
+			</div>
+			<button class="btn">Send</button>
+		</div>
+	</body>
+</html>

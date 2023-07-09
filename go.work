@@ -1,0 +1,11 @@
+go 1.20
+
+use (
+	./BlockChain
+	./BlockChain/Wallet
+	./BlockChain/block
+	./BlockChain/utils
+	./BlockChain/server
+	./BlockChain/server/startServer
+	./BlockChain/wallet_server/
+)
