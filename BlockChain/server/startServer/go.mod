@@ -1,3 +1,3 @@
-module start_server.go
+module main.go
 
 go 1.20

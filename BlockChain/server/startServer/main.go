@@ -9,7 +9,7 @@ import (
 )
 
 func main(){
-	port := flag.Uint("port",8080,"TCP Port Number for BlockChain Server")
+	port := flag.Uint("port",5000,"TCP Port Number for BlockChain Server")
 	bind := flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
