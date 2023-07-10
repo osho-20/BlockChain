@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sync"
 
 	"wallet_server.go"
 )
@@ -51,8 +52,18 @@ func main() {
 		// Handle the bind address logic here
 		fmt.Printf("Using bind address: %s\n", *bind)
 	}
-	app := wallet_server.NewWalletServer(uint16(*port), *gateway)
-	fmt.Println(app)
-	app.Run()
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		app := wallet_server.NewWalletServer(uint16(*port), *gateway)
+		fmt.Println(app)
+		app.Run()
+	}()
+
+	// Additional code here, if needed, will run concurrently with the server
+
+	wg.Wait()
 }
 
