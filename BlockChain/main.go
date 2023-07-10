@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"server.go"
 	"wallet_server.go"
 )
 
@@ -57,14 +56,9 @@ func main() {
 	// app.Run()
 
 	// Flag handling for Wallet Server
-	walletPort := flag.Uint("wallet-port", 8080, "TCP Port Number for Wallet Server")
-	walletGateway := flag.String("wallet-gateway", "http://127.0.0.1:5000", "BlockChain Gateway")
-	bind := flag.String("wallet-bind", "", "Bind address for the Wallet Server")
-
-	// Flag handling for BlockChain Server
-	blockchainPort := flag.Uint("blockchain-port", 5000, "TCP Port Number for BlockChain Server")
-	// blockchainBind := flag.String("blockchain-bind", "", "Bind address for the BlockChain Server")
-
+	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
+	gateway := flag.String("gateway", "http://127.0.0.1:5000", "BlockChain Gateway")
+	bind := flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -78,26 +72,12 @@ func main() {
 	}
 
 	if *bind != "" {
-		// Handle the bind address logic for Wallet Server here
-		fmt.Printf("Using bind address for Wallet Server: %s\n", *bind)
+		// Handle the bind address logic here
+		fmt.Printf("Using bind address: %s\n", *bind)
 	}
 
-	if *bind != "" {
-		// Handle the bind address logic for BlockChain Server here
-		fmt.Printf("Using bind address for BlockChain Server: %s\n", *bind)
-	}
-
-	// Start Wallet Server
-	walletApp := wallet_server.NewWalletServer(uint16(*walletPort), *walletGateway)
-	fmt.Println(walletApp)
-	go walletApp.Run()
-
-	// Start BlockChain Server
-	blockchainApp := server.BCServer(uint16(*blockchainPort))
-	fmt.Println(blockchainApp)
-	go blockchainApp.Run()
-
-	// Wait indefinitely to keep the application running
-	select {}
+	app := wallet_server.NewWalletServer(uint16(*port), *gateway)
+	fmt.Println(app)
+	app.Run()
 }
 
