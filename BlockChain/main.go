@@ -24,11 +24,12 @@ func main() {
 	// fmt.Printf("B %.1f\n", blockchain.TotalAmount(walletB.Address()))
 	// fmt.Printf("M %.1f\n", blockchain.TotalAmount(walletM.Address()))
 
-	port := flag.Uint("port",8080,"TCP Port Number for Wallet Server")
+	// port := flag.Uint("port",8080,"TCP Port Number for Wallet Server")
 	// gateway := flag.String("gateway","http://127.0.0.1:5000","BlockChain Gateway")
-	gateway := flag.String("gateway","https://blockchain-5one.onrender.com","BlockChain Gateway")
+	gateway := flag.String("gateway","https://blockchain-2vc1.onrender.com/","BlockChain Gateway")
 	flag.Parse()
-	app:=wallet_server.NewWalletServer(uint16 (*port),*gateway)
+	// app:=wallet_server.NewWalletServer(uint16 (*port),*gateway)
+	app:=wallet_server.NewWalletServer(0,*gateway)
 	fmt.Println(app)
 	app.Run()
 }
