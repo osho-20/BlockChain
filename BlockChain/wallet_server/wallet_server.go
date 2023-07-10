@@ -180,5 +180,5 @@ func (server *WalletServer) Run(){
 	http.HandleFunc("/transaction",server.Transaction)
 	// log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(server.Port())),nil))
 	// log.Fatal(http.ListenAndServe("https://blockchain-2vc1.onrender.com/"+strconv.Itoa(int(server.Port())),nil))
-	
+	log.Fatal(http.ListenAndServe(":80", nil))
 }
