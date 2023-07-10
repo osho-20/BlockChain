@@ -25,8 +25,16 @@ func main() {
 	// fmt.Printf("B %.1f\n", blockchain.TotalAmount(walletB.Address()))
 	// fmt.Printf("M %.1f\n", blockchain.TotalAmount(walletM.Address()))
 
-	port := flag.Uint("port",8080,"TCP Port Number for Wallet Server")
-	gateway := flag.String("gateway","http://127.0.0.1:5000","BlockChain Gateway")
+	// port := flag.Uint("port",8080,"TCP Port Number for Wallet Server")
+	// gateway := flag.String("gateway","http://127.0.0.1:5000","BlockChain Gateway")
+	
+	// flag.Parse()
+	// app:=wallet_server.NewWalletServer(uint16 (*port),*gateway)
+	// fmt.Println(app)
+	// app.Run()
+	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
+	gateway := flag.String("gateway", "http://127.0.0.1:5000", "BlockChain Gateway")
+	bind := flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -38,7 +46,13 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-	app:=wallet_server.NewWalletServer(uint16 (*port),*gateway)
+
+	if *bind != "" {
+		// Handle the bind address logic here
+		fmt.Printf("Using bind address: %s\n", *bind)
+	}
+
+	app := wallet_server.NewWalletServer(uint16(*port), *gateway)
 	fmt.Println(app)
 	app.Run()
 }
