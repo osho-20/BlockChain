@@ -62,6 +62,7 @@ func main() {
 
 	// Flag handling for Wallet Server
 	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
+	port1 := flag.Uint("port",5000,"TCP Port Number for BlockChain Server")
 	gateway := flag.String("gateway", "http://127.0.0.1:5000", "BlockChain Gateway")
 	bind := flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {
@@ -94,7 +95,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		app := server.BCServer(uint16(*port))
+		app := server.BCServer(uint16(*port1))
 		fmt.Println(app)
 		app.Run()
 	}()
