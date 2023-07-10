@@ -91,7 +91,7 @@ func main() {
 	}()
 
 	// Flag handling for BlockChain Server
-	port = flag.Uint("port", 5000, "TCP Port Number for BlockChain Server")
+	port1 := flag.Uint("port", 5000, "TCP Port Number for BlockChain Server")
 	bind = flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
@@ -114,7 +114,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		app := server.BCServer(uint16(*port))
+		app := server.BCServer(uint16(*port1))
 		fmt.Println(app)
 		app.Run()
 	}()
