@@ -9,7 +9,7 @@
 				let data = { blockchain_address: $('#address').val() };
 				console.log(1);
 				$.ajax({
-					url: '/wallet',
+					url: 'https://blockchain-4t4c.onrender.com/wallet',
 					type: 'POST',
 					success: function (response) {
 						$('#public-key').val(response['public_key']);
@@ -22,7 +22,7 @@
 					},
 				});
 				$.ajax({
-					url: '/wallet/amount',
+					url: 'https://blockchain-4t4c.onrender.com/wallet/amount',
 					type: 'GET',
 					data: data,
 					success: function (resp) {
@@ -41,7 +41,7 @@
 			$(document).ready(function () {
 				$('.btn').click(function () {
 					$.ajax({
-						url: '/transaction',
+						url: 'https://blockchain-4t4c.onrender.com/transaction',
 						type: 'POST',
 						contentType: 'application/json',
 						data: JSON.stringify({
@@ -68,7 +68,7 @@
 				function ReloadWallet() {
 					let data = { blockchain_address: $('#address').val() };
 					$.ajax({
-						url: '/wallet/amount',
+						url: 'https://blockchain-4t4c.onrender.com/wallet/amount',
 						type: 'GET',
 						data: data,
 						success: function (resp) {
