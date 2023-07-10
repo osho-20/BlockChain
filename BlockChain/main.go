@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 
 	"wallet_server.go"
 )
@@ -26,7 +27,17 @@ func main() {
 
 	port := flag.Uint("port",8080,"TCP Port Number for Wallet Server")
 	gateway := flag.String("gateway","http://127.0.0.1:5000","BlockChain Gateway")
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+		flag.PrintDefaults()
+	}
 	flag.Parse()
+
+	if flag.NArg() > 0 {
+		fmt.Fprintf(os.Stderr, "Error: Unexpected positional arguments\n")
+		flag.Usage()
+		os.Exit(1)
+	}
 	app:=wallet_server.NewWalletServer(uint16 (*port),*gateway)
 	fmt.Println(app)
 	app.Run()
