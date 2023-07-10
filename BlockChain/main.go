@@ -95,7 +95,7 @@ func main() {
 	// Start BlockChain Server
 	blockchainApp := server.BCServer(uint16(*blockchainPort))
 	fmt.Println(blockchainApp)
-	blockchainApp.Run()
+	go blockchainApp.Run()
 
 	// Wait indefinitely to keep the application running
 	select {}
