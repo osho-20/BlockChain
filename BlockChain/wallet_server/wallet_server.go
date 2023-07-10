@@ -39,7 +39,6 @@ func (server* WalletServer) Index(w http.ResponseWriter,req *http.Request){
 	switch req.Method{
 		case http.MethodGet:
 			t,_:=template.ParseFiles(path.Join(tempDir,"index.html"))
-			// fmt.Println(t)
 			t.Execute(w,"")
 		default:
 			log.Printf("Error: Invalid.")
@@ -115,10 +114,6 @@ func (server* WalletServer) Transaction(resp http.ResponseWriter,req* http.Reque
 		fmt.Println("Fail.")
 		io.WriteString(resp,"Fail.")
 		return
-		// fmt.Println(privateKey)
-		// fmt.Println(publicKey)
-		// fmt.Println(*transact.SenderBlockChainAddress)
-		// fmt.Printf("%0.1f\n",value32)
 	default:
 		resp.WriteHeader(http.StatusBadRequest)
 		log.Println("Error: Invalid http request.")
