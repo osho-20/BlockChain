@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"server.go"
 	"wallet_server.go"
 )
 
@@ -59,6 +60,7 @@ func main() {
 	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
 	gateway := flag.String("gateway", "http://127.0.0.1:5000", "BlockChain Gateway")
 	bind := flag.String("bind", "", "Bind address for the server")
+	
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -79,5 +81,31 @@ func main() {
 	app := wallet_server.NewWalletServer(uint16(*port), *gateway)
 	fmt.Println(app)
 	app.Run()
+
+	blockchainPort := flag.Uint("blockchain-port", 5000, "TCP Port Number for BlockChain Server")
+	bind = flag.String("bind", "", "Bind address for the server")
+	
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+		flag.PrintDefaults()
+	}
+	flag.Parse()
+
+	if flag.NArg() > 0 {
+		fmt.Fprintf(os.Stderr, "Error: Unexpected positional arguments\n")
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	if *bind != "" {
+		// Handle the bind address logic here
+		fmt.Printf("Using bind address: %s\n", *bind)
+	}
+	blockchainApp := server.BCServer(uint16 (*blockchainPort) )
+	fmt.Println(blockchainApp)
+	go blockchainApp.Run()
+
+	// // Wait indefinitely to keep the application running
+	select {}
 }
 
