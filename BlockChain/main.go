@@ -4,9 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"sync"
 
-	"server.go"
 	"wallet_server.go"
 )
 
@@ -34,35 +32,7 @@ func main() {
 	// app:=wallet_server.NewWalletServer(uint16 (*port),*gateway)
 	// fmt.Println(app)
 	// app.Run()
-	// port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
-	// gateway := flag.String("gateway", "http://127.0.0.1:5000", "BlockChain Gateway")
-	// bind := flag.String("bind", "", "Bind address for the server")
-	// flag.Usage = func() {
-	// 	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
-	// 	flag.PrintDefaults()
-	// }
-	// flag.Parse()
-
-	// if flag.NArg() > 0 {
-	// 	fmt.Fprintf(os.Stderr, "Error: Unexpected positional arguments\n")
-	// 	flag.Usage()
-	// 	os.Exit(1)
-	// }
-
-	// if *bind != "" {
-	// 	// Handle the bind address logic here
-	// 	fmt.Printf("Using bind address: %s\n", *bind)
-	// }
-	// app := wallet_server.NewWalletServer(uint16(*port), *gateway)
-	// fmt.Println(app)
-	// app.Run()
-
-	// Flag handling for Wallet Server
-	var wg sync.WaitGroup
-
-	// Flag handling for Wallet Server
 	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
-	port1 := flag.Uint("port",5000,"TCP Port Number for BlockChain Server")
 	gateway := flag.String("gateway", "http://127.0.0.1:5000", "BlockChain Gateway")
 	bind := flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {
@@ -79,28 +49,10 @@ func main() {
 
 	if *bind != "" {
 		// Handle the bind address logic here
-		fmt.Printf("Using bind address for Wallet Server: %s\n", *bind)
+		fmt.Printf("Using bind address: %s\n", *bind)
 	}
-
-	// Start Wallet Server in a goroutine
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		app := wallet_server.NewWalletServer(uint16(*port), *gateway)
-		fmt.Println(app)
-		app.Run()
-	}()
-
-	// Start BlockChain Server in a goroutine
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		app := server.BCServer(uint16(*port1))
-		fmt.Println(app)
-		app.Run()
-	}()
-
-	// Wait for both applications to finish
-	wg.Wait()
+	app := wallet_server.NewWalletServer(uint16(*port), *gateway)
+	fmt.Println(app)
+	app.Run()
 }
 
