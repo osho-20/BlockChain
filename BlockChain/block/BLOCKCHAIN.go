@@ -18,7 +18,7 @@ import (
 
 const (
 	MINNING_DIFFICULTY = 3
-	MINING_SENDER      = "BlockChain"
+	MINING_SENDER      = "1MjYwTgjcNrwHPBs6bZyUn2rWG2di8smgZ"
 	MINING_REWARD      = 1.0
 	MINING_TIME_SEC    = 10
 
@@ -227,6 +227,7 @@ func (blockchain *BlockChain) CreateTransaction(sender string, receiver string, 
 	return isTransacted
 }
 
+
 func (blockchain *BlockChain) AddTransaction(sender string, receiver string, value float32, senderPublicKey *ecdsa.PublicKey, sign *utils.Signature) bool {
 	transact := NewTransaction(sender, receiver, value)
 	if sender == MINING_SENDER {
@@ -314,6 +315,7 @@ func (blockchain *BlockChain) Mining() bool {
 	}
 	fmt.Println("running")
 	blockchain.AddTransaction(MINING_SENDER, blockchain.blockChainAddress, MINING_REWARD, nil, nil)
+	fmt.Println(blockchain.blockChainAddress)
 	nonce := blockchain.MineTransaction()
 	previousblock := blockchain.LastBlock().Hash()
 	blockchain.CreateBlock(nonce, previousblock)
@@ -355,7 +357,6 @@ func (blockchain *BlockChain) TotalAmount(blockChainAddress string) float32 {
 			if blockChainAddress == transact.senderAddress {
 				totalAmount -= transact.value
 			}
-
 		}
 	}
 	return totalAmount
