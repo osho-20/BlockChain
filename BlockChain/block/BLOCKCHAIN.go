@@ -59,7 +59,6 @@ func (block *Block) Print() {
 	for _, transact := range block.transactions {
 		transact.Print()
 	}
-
 }
 
 // Defining BlockChain

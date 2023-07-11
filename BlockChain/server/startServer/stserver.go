@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"sync"
 
 	server "server.go"
 )
@@ -25,18 +24,8 @@ func main(){
 	}
 
 	if *bind != "" {
-		// Handle the bind address logic here
 		fmt.Printf("Using bind address: %s\n", *bind)
 	}
-	
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		app:=server.BCServer(uint16 (*port))
-		app.Run()
-	}()
-	// Additional code here, if needed, will run concurrently with the server
-
-	wg.Wait()
+	app:=server.BCServer(uint16 (*port))
+	app.Run()
 }

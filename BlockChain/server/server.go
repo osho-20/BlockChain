@@ -166,12 +166,13 @@ func (server *BlockChainServer) Consensus (resp http.ResponseWriter,req *http.Re
 		log.Println("Error: 2 Invalid HTTP Method")
 		resp.WriteHeader(http.StatusBadRequest)
 	}
+
 }
 
 
 func (server *BlockChainServer) Run(){
-	http.HandleFunc("/server",server.BChain)
-	http.HandleFunc("/server/transactions",server.Transaction)
+	http.HandleFunc("/",server.BChain)
+	http.HandleFunc("/transactions",server.Transaction)
 	http.HandleFunc("/mine",server.Mine)
 	http.HandleFunc("/mine/start",server.StartMine)
 	http.HandleFunc("/amount",server.Amount)
