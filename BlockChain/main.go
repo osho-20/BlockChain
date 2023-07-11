@@ -6,6 +6,7 @@ import (
 	"os"
 	"sync"
 
+	"server.go"
 	"wallet_server.go"
 )
 
@@ -34,8 +35,8 @@ func main() {
 	// fmt.Println(app)
 	// app.Run()
 	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
-	// gateway := flag.String("gateway", "http://127.0.0.1:8081", "BlockChain Gateway")
-	gateway := flag.String("gateway", "https://blockchain-4t4c.onrender.com", "BlockChain Gateway")
+	gateway := flag.String("gateway", "http://127.0.0.1:8081", "BlockChain Gateway")
+	// gateway := flag.String("gateway", "https://blockchain-4t4c.onrender.com", "BlockChain Gateway")
 	bind := flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
@@ -61,6 +62,12 @@ func main() {
 		app := wallet_server.NewWalletServer(uint16(*port), *gateway)
 		fmt.Println(app)
 		app.Run()
+	}()
+
+	go func() {
+		defer wg.Done()
+		app1:=server.BCServer(uint16 (*port))
+		app1.Run()
 	}()
 
 	// Additional code here, if needed, will run concurrently with the server

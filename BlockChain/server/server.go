@@ -166,7 +166,6 @@ func (server *BlockChainServer) Consensus (resp http.ResponseWriter,req *http.Re
 		log.Println("Error: 2 Invalid HTTP Method")
 		resp.WriteHeader(http.StatusBadRequest)
 	}
-
 }
 
 
