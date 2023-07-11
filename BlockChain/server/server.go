@@ -172,10 +172,10 @@ func (server *BlockChainServer) Consensus (resp http.ResponseWriter,req *http.Re
 
 func (server *BlockChainServer) Run(){
 	server.GetBlockChain().Run()
-	http.HandleFunc("/",server.BChain)
+	http.HandleFunc("/server",server.BChain)
 	http.HandleFunc("/transactions",server.Transaction)
 	http.HandleFunc("/mine",server.Mine)
-	http.HandleFunc("/mine/start",server.StartMine)
+	http.HandleFunc("/",server.StartMine)
 	http.HandleFunc("/amount",server.Amount)
 	http.HandleFunc("/consesus",server.Consensus)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(server.Port())),nil))

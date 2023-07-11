@@ -35,6 +35,24 @@
 						console.error(err);
 					},
 				});
+				function ReloadWallet() {
+					let data = { blockchain_address: $('#address').val() };
+					$.ajax({
+						url: '/wallet/amount',
+						type: 'GET',
+						data: data,
+						success: function (resp) {
+							var response = JSON.parse(resp);
+							let amount = response.amount;
+							$('#wallet_amount').text(amount);
+							console.info(amount);
+						},
+						error: function (err) {
+							console.error(err);
+						},
+					});
+				}
+				setInterval(ReloadWallet, 3000);
 			});
 		</script>
 		<script>
@@ -82,6 +100,7 @@
 						},
 					});
 				}
+				setInterval(ReloadWallet, 3000);
 				$('.reload').click(function () {
 					ReloadWallet();
 				});
