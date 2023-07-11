@@ -4,6 +4,7 @@ use (
 	./BlockChain
 	./BlockChain/Wallet
 	./BlockChain/block
+	./BlockChain/neighbour
 	./BlockChain/utils
 	./BlockChain/server
 	./BlockChain/server/startServer
