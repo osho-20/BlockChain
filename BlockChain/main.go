@@ -33,7 +33,6 @@ func main() {
 	// fmt.Println(app)
 	// app.Run()
 	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
-	// gateway := flag.String("gateway", "http://127.0.0.1:8081", "BlockChain Gateway")
 	gateway := flag.String("gateway", "https://blockchain-4t4c.onrender.com", "BlockChain Gateway")
 	bind := flag.String("bind", "", "Bind address for the server")
 	flag.Usage = func() {

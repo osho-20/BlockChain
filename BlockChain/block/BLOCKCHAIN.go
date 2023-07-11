@@ -7,10 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
 
+	neigh "neighbor.go"
 	"utils.go"
 )
 
@@ -19,6 +21,12 @@ const (
 	MINING_SENDER      = "BlockChain"
 	MINING_REWARD      = 1.0
 	MINING_TIME_SEC    = 10
+
+	BLOCKCHAIN_PORT_RANGE_START = 5000
+	BLOCKCHAIN_PORT_RANGE_END = 5003
+	NEIGHBOR_IP_RANGE_START = 0 
+	NEIGHBOR_IP_RANGE_END = 1
+	BLOCKCHAIN_NEIGHBOR_SYNCTIME = 20
 )
 
 // Defining Block.
@@ -109,21 +117,26 @@ func NewBlockChain(blockChainAddress string,port uint16) *BlockChain {
 }
 
 func (blockchain *BlockChain) Run(){
-	// blockchain.StartSyncNeighbor
+	blockchain.startSyncNeighbors()
 	blockchain.ResolveConflicts()
 }
 
-func (blockchain *BlockChain) SetNeighbour(){
-	// blockchain.neighbors = utils.FindNeighbors(
-	// 	utils.GetHost(),bc.port,
-	// )
+func (blockchain *BlockChain) SetNeighbor(){
+	blockchain.neighbors = neigh.FindNeighbors(
+		neigh.GetHost(),blockchain.port,NEIGHBOR_IP_RANGE_START , NEIGHBOR_IP_RANGE_END,BLOCKCHAIN_PORT_RANGE_START,BLOCKCHAIN_PORT_RANGE_END,
+	)
 	log.Printf("%v\n",blockchain.neighbors)
 }
 
 func (blockchain *BlockChain) SyncNeighbors() {
 	blockchain.muxNeighbors.Lock()
 	defer blockchain.muxNeighbors.Unlock()
-	// blockchain.SetNeighbor()
+	blockchain.SetNeighbor()
+}
+
+func (blockchain* BlockChain) startSyncNeighbors(){
+	blockchain.SyncNeighbors()
+	_ = time.AfterFunc(time.Second* BLOCKCHAIN_NEIGHBOR_SYNCTIME,blockchain.startSyncNeighbors)
 }
 
 func (blockchain *BlockChain) TransactionPool() []*Transaction{
@@ -306,12 +319,13 @@ func (blockchain *BlockChain) Mining() bool {
 	blockchain.CreateBlock(nonce, previousblock)
 	log.Println("action = mining, status = success")
 
-	// for _,n:= range blockchain.neighbours{
-	// 	endpoint:=fmt.Sprintf("http://%s/consensus",n)
-	// 	req,_:=http.NewRequest("PUT",endpoint,nil)
-	// 	resp,_:=client.Do(req)
-	// 	log.Printf("%v\n",resp)
-	// }
+	for _,n:= range blockchain.neighbors{
+		endpoint:=fmt.Sprintf("http://%s/consensus",n)
+		client:=&http.Client{}
+		req,_:=http.NewRequest("PUT",endpoint,nil)
+		resp,_:=client.Do(req)
+		log.Printf("%v\n",resp)
+	}
 	return true
 }
 
@@ -391,24 +405,27 @@ func (blockchain *BlockChain) ValidChain(chain []*Block) bool{
 	return true
 }
 
+func (blockchain * BlockChain) Chain() []*Block{
+	return blockchain.chain
+}
+
 func (blockchain *BlockChain) ResolveConflicts() bool{
 	var longestchain []*Block = nil
 	maxl:=len(blockchain.chain)
-	// for _,n:=range blockchain.neighbours {
-	// 	endpoint :=fmt.Sprintf("http://%s/chain",n)
-	// 	resp,_:= http.Get(endpoint)
-	// 	if resp.StatusCode==200 {
-	// 		var bcResp BlockChain
-	// 		decoder:=json.NewDecoder(resp.Body)
-	// 		_ = decoder.Decode(&bcResp)
-
-	// 		chain:=bcResp.Chain()
-			// if(len(chain)>maxl && blockchain.ValidChain(chain)){
-			// 	maxl=len(chain)
-			// 	longestchain=chain
-			// }
-	// 	}
-	// }
+	for _,n:=range blockchain.neighbors {
+		endpoint :=fmt.Sprintf("http://%s/chain",n)
+		resp,_:= http.Get(endpoint)
+		if resp.StatusCode==200 {
+			var bcResp BlockChain
+			decoder:=json.NewDecoder(resp.Body)
+			_ = decoder.Decode(&bcResp)
+			chain:=bcResp.Chain()
+			if(len(chain)>maxl && blockchain.ValidChain(chain)){
+				maxl=len(chain)
+				longestchain=chain
+			}
+		}
+	}
 	fmt.Println(maxl)
 	if longestchain!=nil{
 		blockchain.chain=longestchain
@@ -417,5 +434,4 @@ func (blockchain *BlockChain) ResolveConflicts() bool{
 	}
 	log.Println("Resolved Conflicts Retained")
 	return false
-
 }

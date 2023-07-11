@@ -171,6 +171,7 @@ func (server *BlockChainServer) Consensus (resp http.ResponseWriter,req *http.Re
 
 
 func (server *BlockChainServer) Run(){
+	server.GetBlockChain().Run()
 	http.HandleFunc("/",server.BChain)
 	http.HandleFunc("/transactions",server.Transaction)
 	http.HandleFunc("/mine",server.Mine)
