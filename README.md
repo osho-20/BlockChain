@@ -17,6 +17,6 @@ This project aims to create a secure and efficient wallet application utilizing 
 
 ## Installation and Setup
 
-1. Clone the repository: `git clone [repository URL]`
+1. Clone the repository: `git clone https://github.com/osho-20/BlockChain.git`
 2. Install dependencies: `npm install`
 
